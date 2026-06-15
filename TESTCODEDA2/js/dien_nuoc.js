@@ -27,7 +27,8 @@ const audio = document.getElementById("alertSound");
 
 // --- 1. QUẢN LÝ XÁC THỰC VÀ BẮT ĐẦU THEO DÕI ---
 firebase.auth().onAuthStateChanged((user) => {
-  if (!user) {
+  const hasLocalSession = localStorage.getItem("userUID");
+  if (!user && !hasLocalSession) {
     console.warn("Chưa đăng nhập");
     currentUid = null;
     return;

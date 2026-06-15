@@ -114,7 +114,8 @@ const chart = new Chart(ctx, {
 
 /* ===== REALTIME UPDATE & NOTIFICATION LOGIC ===== */
 firebase.auth().onAuthStateChanged((user) => {
-  if (!user) return;
+  const hasLocalSession = localStorage.getItem("userUID");
+  if (!user && !hasLocalSession) return;
 
   // Sử dụng cố định UID theo code của MCU để đồng bộ dữ liệu
   const uid = "nfrrPdP0AVMK2aVRq4bQG4T3xt82";

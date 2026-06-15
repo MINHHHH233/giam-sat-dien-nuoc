@@ -32,10 +32,11 @@ function showLoginSuccess() {
 firebase.auth().onAuthStateChanged((user) => {
   const userInfo = document.getElementById("userInfo");
   const emailSpan = document.getElementById("userEmail");
+  const hasLocalSession = localStorage.getItem("userUID");
 
-  if (user) {
+  if (user || hasLocalSession) {
     // Đã đăng nhập
-    if (emailSpan) emailSpan.innerText = user.email;
+    if (emailSpan) emailSpan.innerText = user ? user.email : localStorage.getItem("userEmail");
     if (userInfo) userInfo.style.display = "flex";
 
     // Ẩn màn hình loading xác thực

@@ -49,7 +49,8 @@ function updateVolumeSliderProgress(val) {
 
 /* ===== TẢI DỮ LIỆU TỪ HỆ THỐNG ===== */
 firebase.auth().onAuthStateChanged((user) => {
-  if (!user) {
+  const hasLocalSession = localStorage.getItem("userUID");
+  if (!user && !hasLocalSession) {
     showLog("⚠️ Chưa đăng nhập! Vui lòng đăng nhập hệ thống.", "error");
     return;
   }
