@@ -1,0 +1,88 @@
+<!doctype html>
+<!--
+  ============================================================
+  FILE: auth.html
+  MÔ TẢ: Trang đăng nhập và đăng ký tài khoản Firebase
+  ============================================================
+  
+  HƯỚNG DẪN SỬ DỤNG:
+  1. Người dùng có thể ĐĂNG NHẬP hoặc ĐĂNG KÝ tài khoản
+  2. Nhấn "Đăng ký" để chuyển đổi form đăng ký
+  3. Nhấn "Đăng nhập" để quay lại form đăng nhập
+  4. Sau khi đăng nhập thành công, tự động chuyển về index.html
+  
+  CÁC HÀM CHÍNH:
+  - switchForm(): Chuyển đổi giữa đăng nhập và đăng ký
+  - handleSubmit(): Xử lý khi nhấn nút submit
+  - registerUser(): Đăng ký tài khoản mới với Firebase Auth
+  - loginUser(): Đăng nhập với email và password
+  - showError(): Hiển thị thông báo lỗi
+  - clearError(): Xóa thông báo lỗi
+  
+  LƯU TRỮ LOCAL:
+  - loginSuccess: Đánh dấu đăng nhập thành công để hiện toast
+  - userEmail: Lưu email người dùng
+  - userUID: Lưu UID của Firebase user
+-->
+<html lang="vi">
+  <head>
+    <!-- Meta charset UTF-8 để hỗ trợ tiếng Việt -->
+    <meta charset="UTF-8" />
+    <title>Đăng nhập / Đăng ký</title>
+    <!-- CSS cho trang xác thực -->
+    <link rel="stylesheet" href="../css/auth.css" />
+  </head>
+  <body>
+    <!-- Aurora background blobs for glassmorphism mesh effect -->
+    <div class="aurora-bg">
+      <div class="blob blob-1"></div>
+      <div class="blob blob-2"></div>
+    </div>
+
+    <!-- Nút quay lại trang chủ -->
+    <div class="back-btn" onclick="window.location.href='../index.html'" role="button" aria-label="Quay lại">
+      <img src="../images/back.png" alt="Back" />
+    </div>
+
+    <!-- Container chính chứa form đăng nhập/đăng ký -->
+    <div class="auth-container">
+      <!-- Box chứa các input và nút -->
+      <div class="auth-box">
+        <h2 id="title">Đăng nhập</h2>
+
+        <!-- Input email - bắt buộc có định dạng email hợp lệ -->
+        <input type="email" id="email" placeholder="Email" />
+        <!-- Input mật khẩu - ít nhất 6 ký tự theo yêu cầu Firebase -->
+        <input type="password" id="password" placeholder="Mật khẩu" />
+
+        <!-- Thông báo lỗi - hiển thị khi có lỗi đăng nhập/đăng ký -->
+        <p id="errorMsg" class="error-msg"></p>
+
+        <!-- Nút submit - gọi handleSubmit() để xử lý đăng nhập/đăng ký -->
+        <button id="submitBtn" onclick="handleSubmit()">Đăng nhập</button>
+
+        <!-- Khung phân chia -->
+        <div class="divider">Hoặc</div>
+
+        <!-- Nút đăng nhập bằng Google -->
+        <button class="google-btn" id="googleBtn" onclick="loginWithGoogle()">
+          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google Logo" />
+          <span>Đăng nhập bằng Google</span>
+        </button>
+
+        <!-- Link chuyển đổi giữa form đăng nhập và đăng ký -->
+        <p class="switch">
+          Chưa có tài khoản?
+          <span onclick="switchForm()">Đăng ký</span>
+        </p>
+      </div>
+    </div>
+
+    <!-- ===== FIREBASE SDK ===== -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+    <script src="../js/auth.js"></script>
+  </body>
+</html>

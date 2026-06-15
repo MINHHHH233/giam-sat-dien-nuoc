@@ -1,0 +1,168 @@
+<!doctype html>
+<!--
+  ============================================================
+  FILE: setting.html
+  MÔ TẢ: Trang cấu hình các ngưỡng giám sát và lịch chốt điện nước
+  ============================================================
+-->
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cài đặt hệ thống</title>
+    <!-- Nhúng CSS đồng bộ -->
+    <link rel="stylesheet" href="../css/setting.css" />
+  </head>
+  <body>
+    <div class="settings-container">
+      <div class="settings-header animate-fade-in">
+        <h2>⚙️ Cài đặt Hệ thống</h2>
+        <p>Cấu hình các ngưỡng đo an toàn, âm thanh cảnh báo và thời gian chốt số định kỳ.</p>
+      </div>
+
+      <div class="settings-grid">
+        <!-- CARD 1: NGƯỠNG DÒNG ĐIỆN & CẢNH BÁO QUÁ TẢI -->
+        <div class="card card-neon-orange animate-slide-up" style="animation-delay: 0.1s;">
+          <div class="card-header">
+            <div class="icon-wrap">⚡</div>
+            <h3>Cảnh báo quá tải Dòng điện</h3>
+          </div>
+          <div class="row">
+            <label for="rangeCurrent">Ngưỡng dòng điện tối đa:</label>
+            <div class="range-wrap">
+              <input
+                type="range"
+                id="rangeCurrent"
+                min="1"
+                max="30"
+                step="0.5"
+                value="10"
+                oninput="updateCurrentVal(this.value)"
+              />
+              <div class="range-display">
+                <span class="value-display" id="currentVal">10</span>
+                <span class="unit">A</span>
+              </div>
+            </div>
+          </div>
+          <div class="desc">
+            Hệ thống sẽ tự động gửi thông báo lỗi và phát âm thanh chuông cảnh báo từ trình duyệt khi dòng điện đo được từ ESP vượt quá ngưỡng này.
+          </div>
+        </div>
+
+        <!-- CARD 2: ĐIỆN ÁP TIÊU CHUẨN -->
+        <div class="card card-neon-blue animate-slide-up" style="animation-delay: 0.2s;">
+          <div class="card-header">
+            <div class="icon-wrap">🔌</div>
+            <h3>Điện áp định mức tiêu chuẩn</h3>
+          </div>
+          <div class="row row-input">
+            <label for="voltageStandard">Điện áp tiêu chuẩn Việt Nam:</label>
+            <div class="input-wrap">
+              <input
+                type="number"
+                id="voltageStandard"
+                min="100"
+                max="300"
+                value="220"
+              />
+              <span class="unit-overlay">V</span>
+            </div>
+          </div>
+          <div class="desc">
+            Dùng để so sánh hiệu số lệch điện áp tăng/giảm thời gian thực (realtime) trên trang chủ (mặc định tại Việt Nam là 220V).
+          </div>
+        </div>
+
+        <!-- CARD 3: CẢNH BÁO ÂM THANH -->
+        <div class="card card-neon-purple animate-slide-up" style="animation-delay: 0.3s;">
+          <div class="card-header">
+            <div class="icon-wrap">🔊</div>
+            <h3>Âm thanh báo động</h3>
+          </div>
+          <div class="row row-toggle">
+            <label style="cursor: pointer;" for="checkboxSound">Kích hoạt âm thanh chuông cảnh báo:</label>
+            <label class="toggle">
+              <input type="checkbox" id="checkboxSound" />
+              <span class="slider"></span>
+            </label>
+          </div>
+          <div class="desc">
+            Phát nhạc chuông báo động lập tức từ trình duyệt khi dòng điện vượt ngưỡng an toàn.
+          </div>
+
+          <div class="row row-volume" style="margin-top: 18px;">
+            <label for="rangeVolume">Âm lượng còi cảnh báo:</label>
+            <div class="range-wrap">
+              <input
+                type="range"
+                id="rangeVolume"
+                min="0"
+                max="1"
+                step="0.05"
+                value="0.3"
+                oninput="updateVolumeVal(this.value)"
+              />
+              <div class="range-display" style="background: rgba(168, 85, 247, 0.1); border: 1px solid rgba(168, 85, 247, 0.2);">
+                <span class="value-display" id="volumeVal" style="color: #a855f7 !important;">30</span>
+                <span class="unit" style="color: #6b21a8;">%</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="file-row">
+            <div class="audio-info">
+              <span class="audio-icon">🎵</span>
+              <span class="audio-name">Cause I Love You.mp3</span>
+            </div>
+            <button onclick="testAlarmSound()" class="btn-test-sound">🎵 Phát thử âm thanh</button>
+          </div>
+        </div>
+
+        <!-- CARD 4: LỊCH CHỐT HÓA ĐƠN ĐỊNH KỲ -->
+        <div class="card card-neon-green animate-slide-up" style="animation-delay: 0.4s;">
+          <div class="card-header">
+            <div class="icon-wrap">📅</div>
+            <h3>Lịch chốt số điện nước tự động</h3>
+          </div>
+          <div class="row row-datetime">
+            <div class="selector-group">
+              <label for="closeDay">Ngày chốt tiếp theo:</label>
+              <input type="date" id="closeDay" />
+            </div>
+            <div class="selector-group">
+              <label for="closeTime">Giờ chốt:</label>
+              <input type="time" id="closeTime" />
+            </div>
+          </div>
+          <div class="desc">
+            Hệ thống tự động ghi nhận chỉ số (chốt) điện năng & nước vào ngày giờ đã hẹn, đồng thời tạo thông báo định kỳ và reset bộ đếm cảm biến của ESP về 0.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- THANH NÚT LƯU CỐ ĐỊNH PHÍA DƯỚI -->
+    <div class="save-bar-wrap animate-slide-up">
+      <div class="save-bar">
+        <div class="feedback-msg">
+          <span class="log" id="logMsg"></span>
+        </div>
+        <div class="bar-buttons">
+          <button class="btn-save" onclick="saveSettings()">💾 Lưu cấu hình</button>
+          <button class="btn-logout" onclick="logout()">🚪 Đăng xuất</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Âm thanh thử nghiệm báo động -->
+    <audio id="testAudio" src="../sounds/Cause I Love You.mp3" preload="auto"></audio>
+
+    <!-- ===== FIREBASE SDK ===== -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+    <script src="../js/setting.js"></script>
+  </body>
+</html>

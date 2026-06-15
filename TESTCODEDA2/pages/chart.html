@@ -1,0 +1,94 @@
+<!doctype html>
+<!--
+  ============================================================
+  FILE: chart.html
+  MÔ TẢ: Trang hiển thị đồ thị realtime và danh sách thông báo
+  ============================================================
+  
+  HƯỚNG DẪN SỬ DỤNG:
+  1. ĐỒ THỊ REALTIME:
+     - Hiển thị công suất (W) và lưu lượng nước (mL/s) theo thời gian
+     - Cập nhật mỗi giây từ Firebase Realtime Database
+     - Giữ tối đa 120 điểm (~2 phút dữ liệu)
+     - Trục Y trái: Công suất (W) - màu xanh dương
+     - Trục Y phải: Lưu lượng nước (mL/s) - màu xanh lá
+  
+  2. THÔNG BÁO:
+     - Hiển thị lịch sử chốt điện nước hàng tháng
+     - Hiển thị cảnh báo vượt ngưỡng dòng điện
+     - Có thể đánh dấu đã đọc hoặc xóa toàn bộ
+  
+  THƯ VIỆN SỬ DỤNG:
+  - Chart.js: Vẽ đồ thị đường
+  - Firebase SDK: Lấy dữ liệu realtime
+  
+  CÁC HÀM CHÍNH:
+  - markAllRead(): Đánh dấu tất cả thông báo đã đọc
+  - deleteAllNotifications(): Xóa toàn bộ thông báo
+  - parseVietnameseTime(): Chuyển đổi định dạng thời gian Việt Nam
+  - render(): Render lại danh sách thông báo
+-->
+<html lang="vi">
+  <head>
+    <!-- Meta charset UTF-8 để hỗ trợ tiếng Việt -->
+    <meta charset="UTF-8" />
+    <title>Đồ thị công suất & lưu lượng nước</title>
+
+    <!-- CSS cho trang đồ thị -->
+    <link rel="stylesheet" href="../css/chart.css" />
+
+    <!-- 
+      Chart.js - Thư viện vẽ đồ thị
+      Tài liệu: https://www.chartjs.org/docs/
+    -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body>
+    <!-- 
+      PHẦN ĐỒ THỊ REALTIME
+      - Canvas để Chart.js vẽ đồ thị
+      - ID: powerWaterChart
+      - Hiển thị 2 dataset: Công suất và Lưu lượng nước
+    -->
+    <div class="chart-wrapper">
+      <canvas id="powerWaterChart"></canvas>
+    </div>
+
+    <!-- 
+      PHẦN THÔNG BÁO
+      - Hiển thị danh sách thông báo từ Firebase
+      - Có badge đếm số thông báo chưa đọc
+      - Có nút đánh dấu đã đọc và xóa toàn bộ
+    -->
+    <div class="noti-container">
+      <!-- Header với tiêu đề và các nút chức năng -->
+      <div class="noti-header">
+        <div class="left">
+          <h2>Thông báo</h2>
+          <!-- Badge hiển thị số thông báo chưa đọc -->
+          <span id="unreadCount" class="badge">0</span>
+        </div>
+        <div class="header-buttons">
+          <!-- Nút đánh dấu tất cả đã đọc -->
+          <button onclick="markAllRead()">Đánh dấu đã đọc</button>
+          <!-- Nút xóa toàn bộ thông báo -->
+          <button class="delete-all-btn" onclick="deleteAllNotifications()">
+            Xóa toàn bộ
+          </button>
+        </div>
+      </div>
+
+      <!-- Danh sách thông báo - được render bằng JavaScript -->
+      <div class="noti-list" id="notiList">
+        <!-- Các thông báo sẽ được thêm vào đây bằng JS -->
+      </div>
+    </div>
+
+    <!-- FIREBASE -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+    <script src="../js/chart.js"></script>
+  </body>
+</html>

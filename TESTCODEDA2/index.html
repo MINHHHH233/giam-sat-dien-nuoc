@@ -1,0 +1,158 @@
+<!doctype html>
+<!--
+  ============================================================
+  FILE: index.html
+  MÔ TẢ: Trang Dashboard chính của hệ thống giám sát điện nước
+  ============================================================
+  
+  HƯỚNG DẪN SỬ DỤNG:
+  1. Đây là trang chính của ứng dụng, hiển thị sidebar menu và iframe nội dung
+  2. Sử dụng Firebase Authentication để xác thực người dùng
+  3. Sidebar có thể mở rộng/thu nhỏ bằng cách click vào nút menu
+  4. Các trang con được load vào iframe: home.html, chart.html, setting.html
+-->
+<html lang="vi">
+
+<head>
+  <!-- Meta charset UTF-8 để hỗ trợ tiếng Việt -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description"
+    content="Quản lý và giám sát tiêu thụ điện nước theo tháng. Theo dõi số liệu, xem đồ thị và nhận thông báo chốt điện nước." />
+  <meta name="keywords"
+    content="điện nước, quản lý điện nước, giám sát tiêu thụ, đồng hồ điện, đồng hồ nước, chốt điện nước" />
+  <meta name="theme-color" content="#f8fafc" />
+  <title>Quản lý điện nước - Giám sát tiêu thụ</title>
+  <!-- Open Graph cho chia sẻ mạng xã hội -->
+  <meta property="og:title" content="Quản lý điện nước - Giám sát tiêu thụ" />
+  <meta property="og:description"
+    content="Theo dõi số điện, số nước theo tháng. Xem đồ thị và nhận thông báo chốt điện nước." />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="vi_VN" />
+  <!-- CSS chính cho trang Dashboard -->
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+  <!-- MÀN HÌNH LOADING XÁC THỰC HỆ THỐNG -->
+  <div id="authOverlay" style="
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #0f172a;
+      z-index: 99999;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: opacity 0.4s ease, visibility 0.4s ease;
+    ">
+    <div style="text-align: center; color: white; font-family: sans-serif;">
+      <div style="
+          width: 48px;
+          height: 48px;
+          border: 4px solid rgba(255, 255, 255, 0.1);
+          border-left-color: #3b82f6;
+          border-radius: 50%;
+          animation: spin 1s linear infinite;
+          margin: 0 auto 16px;
+        "></div>
+      <p style="font-weight: 600; font-size: 15px; letter-spacing: 0.5px;">Đang xác thực hệ thống...</p>
+    </div>
+  </div>
+
+  <style>
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+
+  <!-- TOAST THÔNG BÁO ĐĂNG NHẬP THÀNH CÔNG -->
+  <div id="loginToast" class="toast" aria-live="polite">
+    <img src="images/success.png" alt="" />
+    <span>Đăng nhập thành công</span>
+  </div>
+
+  <!-- THÔNG TIN NGƯỜI DÙNG (góc phải trên màn hình) -->
+  <div id="userInfo" class="user-info">
+    <img src="images/user.png" class="user-avatar" />
+    <span id="userEmail"></span>
+    <button onclick="logout()">Logout</button>
+  </div>
+
+  <!-- THÔNG BÁO CHỐT ĐIỆN NƯỚC -->
+  <div id="monthlyNotification" class="monthly-notification hidden">
+    <div class="notif-icon">📊</div>
+    <div class="notif-content">
+      <div class="notif-title" id="notifTitle">Đã chốt điện nước!</div>
+      <div class="notif-message" id="notifMessage"></div>
+    </div>
+    <button class="notif-close" onclick="closeNotification()">✕</button>
+  </div>
+
+  <div class="container">
+    <!-- SIDEBAR MENU (Thanh điều hướng bên trái) -->
+    <div class="sidebar collapsed" id="sidebar">
+      <!-- Nút toggle để mở/đóng sidebar -->
+      <div class="toggle-btn" onclick="toggleSidebar()" role="button" aria-label="Mở/đóng menu">
+        <img src="images/menu.png" alt="" />
+      </div>
+
+      <!-- Menu: Quản lý điện nước - load trang home.html vào iframe -->
+      <div class="menu-item active" data-page="pages/home.html" onclick="loadPage('pages/home.html')" role="button">
+        <img src="images/electric.png" alt="" />
+        <span>Quản lý tiêu dùng điện nước</span>
+      </div>
+
+      <!-- Menu: Đồ thị và thông báo - load trang chart.html vào iframe -->
+      <div class="menu-item" data-page="pages/chart.html" onclick="loadPage('pages/chart.html')" role="button">
+        <img src="images/chart.png" alt="" />
+        <span>Thông báo và đồ thị</span>
+      </div>
+
+      <!-- Menu: Bàn phím & App Companion - load trang app_inventor.html vào iframe -->
+      <div class="menu-item" data-page="pages/app_inventor.html" onclick="loadPage('pages/app_inventor.html')"
+        role="button">
+        <img src="images/app_inventor.png" alt="" />
+        <span>Bàn phím & App Companion</span>
+      </div>
+
+      <!-- Menu dưới cùng của sidebar -->
+      <div class="menu-bottom">
+        <!-- Menu: Cài đặt - load trang setting.html vào iframe -->
+        <div class="menu-item" data-page="pages/setting.html" onclick="loadPage('pages/setting.html')" role="button">
+          <img src="images/setting.jpg" alt="" />
+          <span>Cài đặt</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN FRAME CONTENT -->
+    <div class="main">
+      <iframe id="contentFrame" src="pages/home.html" frameborder="0" style="
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: transparent;
+          ">
+      </iframe>
+    </div>
+  </div>
+
+  <!-- ===== FIREBASE SDK ===== -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+  <!-- ===== CHỨC NĂNG ĐIỀU KHIỂN & KẾT NỐI FIREBASE ===== -->
+  <script src="js/index.js"></script>
+</body>
+
+</html>

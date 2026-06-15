@@ -1,0 +1,284 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Outfit', sans-serif;
+}
+
+body {
+    height: 100vh;
+    background-image: linear-gradient(rgba(15, 23, 42, 0.3), rgba(15, 23, 42, 0.35)), url("../images/bg_dep.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    position: relative;
+}
+
+/* ===== AURORA BLUR CIRCLES IN BACKGROUND ===== */
+.aurora-bg {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.55;
+    animation: bubbleUp 10s infinite alternate ease-in-out;
+}
+
+.blob-1 {
+    width: 250px;
+    height: 250px;
+    background: #3b82f6; /* xanh lam */
+    top: 20%;
+    left: 30%;
+}
+
+.blob-2 {
+    width: 300px;
+    height: 300px;
+    background: #10b981; /* xanh lá */
+    bottom: 15%;
+    right: 25%;
+    animation-delay: -3s;
+}
+
+@keyframes bubbleUp {
+    0% { transform: translateY(0) scale(1) rotate(0deg); }
+    100% { transform: translateY(-40px) scale(1.15) rotate(360deg); }
+}
+
+/* ===== LOGIN CARD (GLASS) ===== */
+.auth-container {
+    position: relative;
+    z-index: 10;
+}
+
+.auth-box {
+    width: 400px;
+    padding: 40px;
+    background: rgba(255, 255, 255, 0.45);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 24px;
+    color: #0f172a;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 20px 50px rgba(15, 23, 42, 0.15);
+    transition: all 0.3s ease;
+}
+
+.auth-box:hover {
+    box-shadow: 0 25px 60px rgba(15, 23, 42, 0.22);
+    border-color: rgba(255, 255, 255, 0.45);
+}
+
+.auth-box h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: #0f172a;
+}
+
+.auth-box input {
+    width: 100%;
+    padding: 14px 18px;
+    margin-bottom: 18px;
+    border-radius: 12px;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    background: rgba(255, 255, 255, 0.6);
+    outline: none;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    color: #0f172a;
+}
+
+.auth-box input::placeholder {
+    color: #64748b;
+    font-weight: 500;
+}
+
+.auth-box input:focus {
+    border-color: #2563eb;
+    background: #ffffff;
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
+    transform: translateY(-1px);
+}
+
+.auth-box button {
+    width: 100%;
+    padding: 14px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    color: white;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.25);
+    transition: all 0.25s ease;
+}
+
+.auth-box button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(37, 99, 235, 0.35);
+    background: linear-gradient(135deg, #2563eb, #1e40af);
+}
+
+.auth-box button:active {
+    transform: translateY(0);
+}
+
+.switch {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 600;
+    color: #475569;
+}
+
+.switch span {
+    color: #2563eb;
+    cursor: pointer;
+    font-weight: 700;
+    margin-left: 4px;
+    transition: color 0.2s;
+}
+
+.switch span:hover {
+    color: #1d4ed8;
+    text-decoration: underline;
+}
+
+/* Nút back trang chủ góc trái */
+.back-btn {
+    position: fixed;
+    top: 24px;
+    left: 24px;
+    width: 44px;
+    height: 44px;
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 100;
+}
+
+.back-btn img {
+    width: 20px;
+    height: 20px;
+    transition: transform 0.25s ease;
+}
+
+.back-btn:hover {
+    background: #ffffff;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+}
+
+.back-btn:hover img {
+    transform: translateX(-3px);
+}
+
+/* ===== ERROR MESSAGE ===== */
+.error-msg {
+    margin-bottom: 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #dc2626;
+    text-align: center;
+    min-height: 18px;
+}
+
+@media (max-width: 480px) {
+    .auth-box {
+        width: calc(100vw - 32px);
+        padding: 30px 20px;
+    }
+    
+    .back-btn {
+        top: 16px;
+        left: 16px;
+    }
+}
+
+/* ===== GOOGLE SIGN IN BUTTON ===== */
+.divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 600;
+    margin: 16px 0;
+}
+
+.divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.divider:not(:empty)::before {
+    margin-right: .5em;
+}
+
+.divider:not(:empty)::after {
+    margin-left: .5em;
+}
+
+.google-btn {
+    width: 100%;
+    padding: 12px;
+    margin-top: 4px;
+    border-radius: 12px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    background: #ffffff;
+    color: #334155;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: all 0.25s ease;
+}
+
+.google-btn:hover {
+    background: #f8fafc;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
+    transform: translateY(-1px);
+}
+
+.google-btn:active {
+    transform: translateY(0);
+}
+
+.google-btn img {
+    width: 18px;
+    height: 18px;
+}

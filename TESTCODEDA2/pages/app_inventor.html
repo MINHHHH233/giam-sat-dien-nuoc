@@ -1,0 +1,243 @@
+<!doctype html>
+<!--
+  ============================================================
+  FILE: app_inventor.html
+  MÔ TẢ: Giao diện bàn phím cấu hình và giả lập App Companion di động
+  ============================================================
+-->
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bàn phím & App Companion</title>
+  <!-- Nhúng CSS đồng bộ -->
+  <link rel="stylesheet" href="../css/app_inventor.css" />
+</head>
+
+<body>
+  <!-- TIÊU ĐỀ TRANG -->
+  <div class="page-header animate-fade-in">
+    <h2>📱 Bàn phím & Giao diện App Inventor</h2>
+    <p>Cấu hình nhanh hệ thống bằng bàn phím số ảo và trải nghiệm tương tác với ứng dụng di động di động đồng bộ thời
+      gian thực.</p>
+  </div>
+
+  <!-- KHU VỰC GRID CHÍNH -->
+  <div class="main-grid">
+    <!-- CỘT TRÁI: BÀN PHÍM CẤU HÌNH -->
+    <div class="glass-card keypad-container animate-fade-in" style="animation-delay: 0.1s;">
+      <div class="card-title">
+        <span>⌨️ Bàn phím cấu hình thông số</span>
+      </div>
+
+      <!-- Chọn thông số để chỉnh sửa -->
+      <div class="target-selector">
+        <label for="settingTarget">Chọn thông số chỉnh sửa:</label>
+        <select id="settingTarget" class="custom-select" onchange="onTargetChange()">
+          <option value="current_threshold" data-unit="A">Ngưỡng dòng điện tối đa (A)</option>
+          <option value="voltage_standard" data-unit="V">Điện áp tiêu chuẩn định mức (V)</option>
+          <option value="electric_price" data-unit="đ">Đơn giá điện năng (đ/kWh)</option>
+          <option value="water_price" data-unit="đ">Đơn giá nước sinh hoạt (đ/m³)</option>
+        </select>
+      </div>
+
+      <!-- MÀN HÌNH LED KỸ THUẬT SỐ -->
+      <div class="lcd-display">
+        <div class="lcd-label" id="lcdLabel">Ngưỡng dòng điện (A)</div>
+        <div class="lcd-current-val" id="lcdCurrentVal">Hiện tại: -- A</div>
+        <div class="lcd-main-val">
+          <span id="lcdBuffer">--</span>
+          <span class="lcd-unit" id="lcdUnit">A</span>
+        </div>
+      </div>
+
+      <!-- NÚT PRESET ĐẶT NHANH -->
+      <div class="presets-row">
+        <button class="preset-btn" onclick="applyPreset(1)">+1</button>
+        <button class="preset-btn" onclick="applyPreset(-1)">-1</button>
+        <button class="preset-btn" onclick="applyPreset(5)">+5</button>
+        <button class="preset-btn" onclick="applyPreset(-5)">-5</button>
+      </div>
+
+      <!-- LƯỚI BÀN PHÍM SỐ -->
+      <div class="keypad-grid">
+        <button class="key-btn" onclick="pressKey('1')">1</button>
+        <button class="key-btn" onclick="pressKey('2')">2</button>
+        <button class="key-btn" onclick="pressKey('3')">3</button>
+
+        <button class="key-btn" onclick="pressKey('4')">4</button>
+        <button class="key-btn" onclick="pressKey('5')">5</button>
+        <button class="key-btn" onclick="pressKey('6')">6</button>
+
+        <button class="key-btn" onclick="pressKey('7')">7</button>
+        <button class="key-btn" onclick="pressKey('8')">8</button>
+        <button class="key-btn" onclick="pressKey('9')">9</button>
+
+        <button class="key-btn action-btn" onclick="pressKey('C')">CLEAR</button>
+        <button class="key-btn" onclick="pressKey('0')">0</button>
+        <button class="key-btn" onclick="pressKey('.')">.</button>
+
+        <button class="key-btn backspace-btn" onclick="pressKey('Backspace')">⌫ BACKSPACE</button>
+        <button class="key-btn enter-btn" onclick="submitValue()">💾 Gửi cấu hình (Enter)</button>
+      </div>
+
+      <!-- KHU VỰC THÔNG BÁO TRẠNG THÁI -->
+      <div class="keyboard-status info" id="keyLog">
+        Sẵn sàng kết nối Firebase.
+      </div>
+    </div>
+
+    <!-- CỘT PHẢI: GIẢ LẬP ĐIỆN THOẠI & KẾT NỐI -->
+    <div class="simulator-container">
+      <!-- MOCKUP ĐIỆN THOẠI -->
+      <div class="phone-mockup animate-fade-in" style="animation-delay: 0.2s;">
+        <div class="phone-speaker"></div>
+        <div class="phone-screen">
+          <!-- STATUS BAR -->
+          <div class="phone-status-bar">
+            <span id="phoneTime">12:00</span>
+            <div class="status-icons">
+              <span>📶</span>
+              <span>📶</span>
+              <span>🔋 100%</span>
+            </div>
+          </div>
+
+          <!-- APP HEADER (APP INVENTOR STYLE) -->
+          <div class="app-header">
+            <div class="app-header-title">GiamSatDienNuoc_IoT</div>
+            <div class="app-status">ONLINE</div>
+          </div>
+
+          <!-- APP CONTENT (SIMULATING MIT APP INVENTOR WORKSPACE) -->
+          <div class="app-content">
+            <!-- Label Title -->
+            <div class="ai2-label" style="text-align: center; font-size: 14px; margin-bottom: 4px;">
+              DỰ ÁN GIÁM SÁT THỜI GIAN THỰC
+            </div>
+
+            <!-- Panel 1: Dữ liệu Điện -->
+            <div class="ai2-panel">
+              <div class="ai2-panel-title">⚡ THÔNG SỐ ĐIỆN NĂNG</div>
+              <div class="ai2-row">
+                <span>Điện năng tiêu thụ:</span>
+                <span class="ai2-val"><span id="phoneEnergy">0.00</span> kWh</span>
+              </div>
+              <div class="ai2-row">
+                <span>Điện áp định mức:</span>
+                <span class="ai2-val"><span id="phoneVoltage">0.0</span> V</span>
+              </div>
+              <div class="ai2-row">
+                <span>Dòng điện tiêu thụ:</span>
+                <span class="ai2-val" id="phoneCurrentWrapper"><span id="phoneCurrent">0.00</span> A</span>
+              </div>
+              <div class="ai2-row">
+                <span>Công suất hiện tại:</span>
+                <span class="ai2-val"><span id="phonePower">0.0</span> W</span>
+              </div>
+            </div>
+
+            <!-- Panel 2: Dữ liệu Nước -->
+            <div class="ai2-panel">
+              <div class="ai2-panel-title">💧 THÔNG SỐ NƯỚC</div>
+              <div class="ai2-row">
+                <span>Tổng lượng nước:</span>
+                <span class="ai2-val"><span id="phoneWater">0.000</span> m³</span>
+              </div>
+              <div class="ai2-row">
+                <span>Lưu lượng dòng chảy:</span>
+                <span class="ai2-val"><span id="phoneFlow">0.0</span> mL/s</span>
+              </div>
+            </div>
+
+            <!-- Panel 3: Điều khiển -->
+            <div class="ai2-panel">
+              <div class="ai2-panel-title">⚙️ CẤU HÌNH & ĐIỀU KHIỂN</div>
+              <div class="ai2-row">
+                <span>Ngưỡng dòng điện cảnh báo:</span>
+                <span class="ai2-val"><span id="phoneThreshold">10.0</span> A</span>
+              </div>
+
+              <div class="ai2-switch-row">
+                <span>Còi cảnh báo thiết bị:</span>
+                <label class="ai2-switch">
+                  <input type="checkbox" id="phoneSoundToggle" onchange="onPhoneSoundToggle(this.checked)" />
+                  <span class="ai2-slider"></span>
+                </label>
+              </div>
+
+              <div style="margin-top: 6px;">
+                <button class="ai2-btn ai2-btn-danger" id="phoneResetBtn" onclick="triggerPhoneReset()">
+                  🔄 RESET CẢM BIẾN ESP
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- KẾT NỐI ĐIỆN THOẠI THẬT (QR CODE) -->
+      <div class="glass-card connection-panel animate-fade-in" style="animation-delay: 0.3s;">
+        <div class="qr-tabs">
+          <button class="qr-tab active" onclick="switchQrTab('aia')">File Dự án (.AIA)</button>
+          <button class="qr-tab" onclick="switchQrTab('apk')">App Companion (APK)</button>
+          <button class="qr-tab" onclick="switchQrTab('config')">Cấu hình Firebase</button>
+        </div>
+
+        <!-- TAB 1: AIA -->
+        <div class="qr-content-pane active" id="qrPaneAia">
+          <div class="qr-box">
+            <img id="qrImgAia"
+              src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://github.com/mit-app-inventor"
+              alt="QR AIA" />
+          </div>
+          <div class="qr-desc">
+            <h4>Mã nguồn MIT App Inventor</h4>
+            <p>Quét mã QR để tải tệp dự án <strong>.aia</strong> để nhập vào App Inventor Editor.</p>
+            <a href="https://github.com/mit-app-inventor" target="_blank" class="qr-link">Tải trực tiếp →</a>
+          </div>
+        </div>
+
+        <!-- TAB 2: APK -->
+        <div class="qr-content-pane" id="qrPaneApk">
+          <div class="qr-box">
+            <img id="qrImgApk"
+              src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://play.google.com/store/apps/details?id=edu.mit.appinventor.aicompanion3"
+              alt="QR APK" />
+          </div>
+          <div class="qr-desc">
+            <h4>MIT AI2 Companion App</h4>
+            <p>Quét để tải ứng dụng Companion chính thức trên điện thoại Android từ Google Play Store.</p>
+            <a href="https://play.google.com/store/apps/details?id=edu.mit.appinventor.aicompanion3" target="_blank"
+              class="qr-link">Tải trên Google Play →</a>
+          </div>
+        </div>
+
+        <!-- TAB 3: CONFIG -->
+        <div class="qr-content-pane" id="qrPaneConfig">
+          <div class="qr-box">
+            <img id="qrImgConfig"
+              src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=FirebaseURL:https://doan2-47df4-default-rtdb.firebaseio.com/"
+              alt="QR Config" />
+          </div>
+          <div class="qr-desc">
+            <h4>Quét mã cấu hình nhanh</h4>
+            <p>Quét cấu hình Firebase Realtime Database kết nối với ứng dụng App Inventor.</p>
+            <a href="#" onclick="copyConfigText(); return false;" class="qr-link">Sao chép chuỗi cấu hình →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== FIREBASE SDK ===== -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+  <!-- ===== LOGIC XỬ LÝ ===== -->
+  <script src="../js/app_inventor.js"></script>
+</body>
+
+</html>

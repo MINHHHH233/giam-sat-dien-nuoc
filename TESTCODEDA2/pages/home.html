@@ -1,0 +1,193 @@
+<!doctype html>
+<!--
+  ============================================================
+  FILE: dien_nuoc.html
+  MÔ TẢ: Trang giám sát điện nước realtime và chốt điện nước hàng tháng
+  ============================================================
+  
+  HƯỚNG DẪN SỬ DỤNG:
+  1. GIÁM SÁT REALTIME (6 thẻ card):
+     - Điện năng (kWh): Tổng điện năng tiêu thụ
+     - Điện áp (V): Điện áp hiện tại, so sánh với điện áp chuẩn
+     - Dòng điện (A): Cường độ dòng điện
+     - Công suất (W): Công suất tiêu thụ
+     - Lưu lượng nước (mL/s): Tốc độ chảy nước
+     - Tổng nước (m³): Tổng lượng nước đã sử dụng
+  
+  2. CHỐT ĐIỆN NƯỚC HÀNG THÁNG:
+     - Hiển thị lịch chốt tiếp theo (từ cài đặt)
+     - Nút "Chốt ngay" để chốt thủ công
+     - Bảng so sánh giữa 2 tháng
+     - Lịch sử các lần chốt
+  
+  3. XU HƯỚNG (TREND):
+     - Hiển thị % thay đổi so với giá trị trước đó
+     - Mũi tên lên (xanh lá): Tăng
+     - Mũi tên xuống (đỏ): Giảm
+  
+  DỮ LIỆU FIREBASE:
+  - users/{uid}/: Dữ liệu realtime từ ESP32
+  - users/{uid}/logs/monthly: Lịch sử chốt điện nước
+  - users/{uid}/settings: Cài đặt điện áp chuẩn, lịch chốt
+-->
+<html lang="vi">
+
+<head>
+    <!-- Meta charset UTF-8 để hỗ trợ tiếng Việt -->
+    <meta charset="UTF-8" />
+    <title>Giám sát điện nước</title>
+    <!-- CSS cho trang giám sát điện nước -->
+    <link rel="stylesheet" href="../css/home.css" />
+</head>
+
+<body>
+    <!-- 
+      GRID HIỂN THỊ 6 THẺ CARD GIÁM SÁT REALTIME
+      - Mỗi card hiển thị một thông số từ cảm biến
+      - Dữ liệu được cập nhật realtime từ Firebase
+      - Phần trend hiển thị % thay đổi so với giá trị trước
+    -->
+    <div class="grid">
+        <!-- Card 1: Điện năng tiêu thụ (kWh) -->
+        <div class="card" id="energyCard">
+            <div class="title">Điện năng</div>
+            <div class="main-value">
+                <span class="number" id="energy">0</span>
+                <span class="unit">kWh</span>
+            </div>
+            <div class="trend" id="energyTrend"></div>
+        </div>
+
+        <!-- Card 2: Điện áp (V) - so sánh với điện áp chuẩn -->
+        <div class="card" id="voltageCard">
+            <div class="title">Điện áp</div>
+            <div class="main-value">
+                <span class="number" id="voltage">0</span>
+                <span class="unit">V</span>
+            </div>
+            <div class="trend" id="voltageTrend"></div>
+        </div>
+
+        <!-- Card 3: Dòng điện (A) -->
+        <div class="card" id="currentCard">
+            <div class="title">Dòng điện</div>
+            <div class="main-value">
+                <span class="number" id="current">0</span>
+                <span class="unit">A</span>
+            </div>
+            <div class="trend" id="currentTrend"></div>
+        </div>
+
+        <!-- Card 4: Công suất tiêu thụ (W) -->
+        <div class="card" id="powerCard">
+            <div class="title">Công suất</div>
+            <div class="main-value">
+                <span class="number" id="power">0</span>
+                <span class="unit">W</span>
+            </div>
+            <div class="trend" id="powerTrend"></div>
+        </div>
+
+        <!-- Card 5: Lưu lượng nước (mL/s) -->
+        <div class="card" id="flowCard">
+            <div class="title">Lưu lượng nước</div>
+            <div class="main-value">
+                <span class="number" id="flow">0</span>
+                <span class="unit">mL/s</span>
+            </div>
+            <div class="trend" id="flowTrend"></div>
+        </div>
+
+        <!-- Card 6: Tổng lượng nước đã sử dụng (m³) -->
+        <div class="card" id="waterCard">
+            <div class="title">Tổng nước</div>
+            <div class="main-value">
+                <span class="number" id="water">0</span>
+                <span class="unit">m³</span>
+            </div>
+            <div class="trend" id="waterTrend"></div>
+        </div>
+    </div>
+
+    <!-- PHẦN CHỐT ĐIỆN NƯỚC THÁNG -->
+    <div class="monthly-section">
+        <div class="monthly-header">
+            <h2>📅 Chốt điện nước hàng tháng</h2>
+            <div class="header-actions">
+                <div class="schedule-info" id="scheduleInfo">
+                     <span class="schedule-label">⏰ Lịch chốt tiếp theo:</span>
+                     <span class="schedule-time" id="scheduleTime">Chưa cài đặt</span>
+                     <span class="schedule-status" id="scheduleStatus"></span>
+                </div>
+                <button id="btnChotNgay" class="btn-chot-ngay">💾 Chốt ngay</button>
+            </div>
+        </div>
+
+        <!-- Bảng so sánh -->
+        <div class="comparison-container">
+            <h3>📊 So sánh sử dụng điện nước</h3>
+            <div class="comparison-selectors">
+                <div class="selector-group">
+                    <label>Tháng trước:</label>
+                    <select id="prevMonthSelect"></select>
+                </div>
+                <div class="selector-group">
+                    <label>Tháng sau:</label>
+                    <select id="currMonthSelect"></select>
+                </div>
+                <button id="btnCompare" class="btn-compare">So sánh</button>
+            </div>
+
+            <table class="comparison-table" id="comparisonTable">
+                <thead>
+                    <tr>
+                        <th>Chỉ số</th>
+                        <th id="thPrevMonth">Tháng trước</th>
+                        <th id="thCurrMonth">Tháng sau</th>
+                        <th>Chênh lệch</th>
+                        <th>Tình trạng</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>🔌 Điện năng (kWh)</td>
+                        <td id="prevEnergy">--</td>
+                        <td id="currEnergy">--</td>
+                        <td id="diffEnergy">--</td>
+                        <td id="statusEnergy">--</td>
+                    </tr>
+                    <tr>
+                        <td>💧 Tổng nước (m³)</td>
+                        <td id="prevWater">--</td>
+                        <td id="currWater">--</td>
+                        <td id="diffWater">--</td>
+                        <td id="statusWater">--</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="comparison-summary" id="comparisonSummary">
+                <p>Chọn 2 tháng và nhấn "So sánh" để xem kết quả.</p>
+            </div>
+        </div>
+
+        <!-- Lịch sử chốt -->
+        <div class="history-container">
+            <h3>📜 Lịch sử chốt điện nước</h3>
+            <div class="history-list" id="historyList">
+                <p class="no-data">Chưa có dữ liệu chốt.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- FIREBASE -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+
+    <script src="../js/dien_nuoc.js"></script>
+
+    <audio id="alertSound" src="../sounds/Cause I Love You.mp3" preload="auto"></audio>
+</body>
+
+</html>

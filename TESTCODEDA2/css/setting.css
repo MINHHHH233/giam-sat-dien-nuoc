@@ -1,0 +1,542 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+  /* Bảng màu tối ưu cho nền sáng (Light Theme Glassmorphic) */
+  --bg-primary: transparent;
+  --bg-secondary: #f8fafc;
+  --bg-tertiary: #ffffff;
+  --text-primary: #0f172a;    /* Màu chữ chính cực kỳ rõ nét (Slate 900) */
+  --text-secondary: #334155;  /* Màu chữ phụ rõ ràng (Slate 700) */
+  --text-muted: #475569;      /* Màu chữ mô tả (Slate 600) */
+  
+  --accent-color: #3b82f6; /* Blue */
+  --accent-gradient: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  
+  --color-success: #10b981; /* Emerald */
+  --color-danger: #ef4444; /* Red */
+  --color-warning: #f59e0b; /* Amber */
+  --color-info: #0ea5e9; /* Sky */
+  
+  /* Cấu hình Glassmorphism nền sáng cao cấp */
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.8);
+  --glass-border-hover: rgba(59, 130, 246, 0.3);
+  --glass-shadow: 0 10px 30px rgba(31, 38, 135, 0.06);
+  
+  --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Reset CSS */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: transparent !important; /* Để lộ hình nền mờ từ index.html */
+  color: var(--text-primary);
+  line-height: 1.6;
+  padding: 30px 20px 120px 20px; /* Thêm khoảng trống ở dưới để không bị thanh lưu che */
+  min-height: 100vh;
+}
+
+/* Tùy chỉnh thanh cuộn */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-color);
+}
+
+.settings-container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* Tiêu đề trang */
+.settings-header {
+  margin-bottom: 32px;
+  text-align: left;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.05);
+  padding-bottom: 16px;
+}
+
+.settings-header h2 {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.settings-header p {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+/* Lưới hiển thị các Card Cài đặt */
+.settings-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+
+/* Thiết kế Card Glassmorphic Sáng tinh tế */
+.card {
+  background: var(--glass-bg) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: 20px !important;
+  padding: 20px 24px;
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  box-shadow: var(--glass-shadow) !important;
+  transition: var(--transition-smooth);
+  position: relative;
+  overflow: hidden;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  border-color: var(--glass-border-hover) !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.08) !important;
+  background: rgba(255, 255, 255, 0.85) !important;
+}
+
+/* Đường viền dải sáng màu neon ở đỉnh Card */
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: transparent;
+}
+
+.card-neon-orange::before { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+.card-neon-blue::before { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
+.card-neon-purple::before { background: linear-gradient(90deg, #a855f7, #c084fc); }
+.card-neon-green::before { background: linear-gradient(90deg, #10b981, #34d399); }
+
+/* Header của từng Card */
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.icon-wrap {
+  font-size: 1.1rem;
+  width: 36px;
+  height: 36px;
+  background: rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+}
+
+.card h3 {
+  font-size: 1.2rem;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+  color: var(--text-primary) !important;
+  margin-bottom: 0 !important;
+}
+
+/* Hàng thiết lập */
+.row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.row label:not(.toggle) {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  flex-grow: 1;
+}
+
+/* Hộp mô tả thông tin (Màu sắc độ tương phản cao, cực dễ đọc) */
+.desc {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  background: rgba(59, 130, 246, 0.06); /* Nền xanh dương dịu mắt độ tương phản cao */
+  padding: 10px 14px;
+  border-radius: 8px;
+  border-left: 3px solid var(--accent-color);
+  font-weight: 500;
+}
+
+/* Thiết kế thanh trượt (Range Slider) */
+.range-wrap {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-grow: 1;
+  min-width: 280px;
+}
+
+input[type=range] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 8px;
+  background: rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+  outline: none;
+}
+
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(29, 78, 216, 0.4);
+  transition: transform 0.1s;
+}
+
+input[type=range]::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+.range-display {
+  display: flex;
+  align-items: baseline;
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  padding: 6px 16px;
+  border-radius: 10px;
+}
+
+.value-display {
+  font-size: 1.6rem !important;
+  font-weight: 850 !important;
+  color: #1d4ed8 !important; /* Xanh đậm sắc nét */
+}
+
+.unit {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #1e3a8a;
+  margin-left: 4px;
+}
+
+/* Thiết kế các Input nhập số, ngày và giờ */
+.input-wrap {
+  position: relative;
+  width: 150px;
+}
+
+input[type=number], input[type=date], input[type=time] {
+  width: 100%;
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+  padding: 8px 12px !important;
+  border-radius: 8px !important;
+  background: rgba(255, 255, 255, 0.95) !important;
+  outline: none;
+  font-family: inherit;
+  font-weight: 700;
+  color: var(--text-primary) !important;
+  transition: var(--transition-smooth);
+}
+
+input[type=number]:focus, input[type=date]:focus, input[type=time]:focus {
+  border-color: var(--accent-color) !important;
+  background: #ffffff !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+.unit-overlay {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-weight: 800;
+  color: var(--text-secondary);
+  pointer-events: none;
+}
+
+/* Thiết kế Switch Toggle Âm thanh */
+.row-toggle {
+  justify-content: space-between;
+}
+
+.toggle {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 22px;
+}
+
+.toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.1);
+  transition: .4s;
+  border-radius: 34px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 3px;
+  bottom: 2px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+}
+
+.toggle input:checked + .slider {
+  background: var(--accent-gradient);
+}
+
+.toggle input:checked + .slider:before {
+  transform: translateX(20px);
+}
+
+/* Thiết kế khu vực âm thanh thử nghiệm */
+.file-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.02);
+  padding: 10px 16px;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  margin-top: 12px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.audio-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.audio-icon {
+  font-size: 1.2rem;
+}
+
+.audio-name {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.btn-test-sound {
+  background: #ffffff !important;
+  color: var(--text-secondary);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02) !important;
+  transition: var(--transition-smooth);
+}
+
+.btn-test-sound:hover {
+  background: var(--accent-color) !important;
+  border-color: var(--accent-color);
+  color: white;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25) !important;
+}
+
+.btn-test-sound.playing {
+  background: linear-gradient(135deg, #ef4444, #dc2626) !important;
+  border-color: #dc2626;
+  color: white;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25) !important;
+}
+
+/* Lịch chốt hàng tháng */
+.row-datetime {
+  gap: 24px;
+}
+
+.row-datetime .selector-group {
+  flex-grow: 1;
+  min-width: 180px;
+}
+
+.row-datetime label {
+  margin-bottom: 8px;
+  display: block;
+}
+
+/* THANH NÚT LƯU CỐ ĐỊNH PHÍA DƯỚI */
+.save-bar-wrap {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 16px 24px;
+  z-index: 100;
+}
+
+.save-bar {
+  max-width: 900px;
+  margin: 0 auto;
+  background: rgba(255, 255, 255, 0.85) !important;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.06);
+  padding: 16px 28px;
+  border-radius: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.feedback-msg {
+  display: flex;
+  align-items: center;
+}
+
+.log {
+  font-weight: 800;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: var(--transition-smooth);
+}
+
+.bar-buttons {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.btn-save {
+  background: var(--accent-gradient) !important;
+  color: white;
+  padding: 12px 28px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2) !important;
+  transition: var(--transition-smooth);
+}
+
+.btn-save:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.35) !important;
+  filter: brightness(1.05);
+}
+
+.btn-logout {
+  background: linear-gradient(135deg, #ef4444, #dc2626) !important;
+  color: white;
+  padding: 12px 28px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.15) !important;
+  transition: var(--transition-smooth);
+}
+
+.btn-logout:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(220, 38, 38, 0.3) !important;
+  filter: brightness(1.05);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.8s ease forwards;
+}
+
+.animate-slide-up {
+  opacity: 0;
+  animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  body {
+    padding: 20px 10px 140px 10px;
+  }
+  
+  .save-bar {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 16px;
+  }
+  
+  .feedback-msg {
+    justify-content: center;
+    text-align: center;
+    margin-bottom: 8px;
+  }
+  
+  .bar-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  
+  .btn-save, .btn-logout {
+    padding: 12px 16px;
+    font-size: 0.85rem;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+  }
+}
